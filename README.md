@@ -1,6 +1,6 @@
-# xmlpro
+# node-filed
 
-> simple way to get xml data.
+> simple way to download file.
 
 
 [![NPM Version](https://img.shields.io/npm/v/filed.svg)](https://npmjs.org/package/node-docx)
@@ -10,25 +10,23 @@
 ## Install
 
 ```
-npm install xmlpro
+npm install node-filed
 ```
 
 ## Example
 
 ```
-var xmlpro = require('xmlpro');
-var dataPath = 'item.list.key';
-var XMLData = '<DOCUMENT><list><key>key1</key></list><list><key>key2</key></list></DOCUMENT>';
+var filed = require('node-filed');
 
-xmlpro.getDatas(XMLDataStr, dataPath, function (err, rs) {
-    // err: xml校验出错
-    if (err) {
-        // 容错处理
-    }
-
-    // rs: 根据路径获取到的数据
-    // data: [['key1'], ['key2']]
-    console.log(rs);
+filed.download({
+    srcs: ['http://s0.hao123img.com/res/img/logo/logonew.png']
+}, function (d) {
+    /**
+    * d {object}
+    * d.filename 下载完成后的文件路径
+    * d.dirname 下载完成后的文件夹路径
+    */
+    console.log(d.filename);
 });
 ```
 
