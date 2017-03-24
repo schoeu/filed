@@ -4,6 +4,10 @@
 
 var filed = require('../');
 
-filed.download({
-    srcs: ['http://s0.hao123img.com/res/img/logo/logonew.png']
+describe('api test.', function () {
+    it('single file download', function () {
+        filed.download({
+            srcs: ['http://s0.hao123img.com/res/img/logo/logonew.png']
+        });
+    });
 });

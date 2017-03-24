@@ -32,7 +32,7 @@ var fild = {
         });
         me.srcs = srcs;
     },
-    download: function (options) {
+    download: function (options, cb) {
         var me = this;
         this.init(options);
         var srcs = me.srcs;
@@ -55,11 +55,15 @@ var fild = {
                         filePart += d;
                     });
                     res.on('end', function () {
-                        fs.writeFile(path.join(me.filesPath, filename), filePart, 'binary', function (err) {
+                        var dlName = path.join(me.filesPath, filename);
+                        fs.writeFile(dlName, filePart, 'binary', function (err) {
                             if (err) {
                                 console.log('down fail');
                             }
-                            console.log('down success');
+                            cb.call(me, {
+                                dirname: me.filesPath,
+                                filename: dlName
+                            });
                         });
                     });
                 }).on('error', function (e) {
