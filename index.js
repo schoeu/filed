@@ -41,16 +41,16 @@ var fild = {
             var item = srcs[i];
             if (typeof item === 'string') {
                 var protocol = url.parse(item);
-                var useMethod = /s/.test(protocol);
+                var useMethod = /s/.test(protocol.protocol || 'http');
 
                 if (useMethod) {
                     get = https.get;
                 }
                 var filename = path.basename(item);
-                var filePart;
-
                 get(item, function (res) {
+                    var filePart = '';
                     var status = res.statusCode;
+                    res.setEncoding("binary");
                     res.on('data', function (d) {
                         filePart += d;
                     });
