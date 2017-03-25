@@ -8,6 +8,9 @@ var http = require('http');
 var https = require('https');
 var path = require('path');
 var url = require('url');
+var EventEmitter = require('events').EventEmitter;
+
+var event = new EventEmitter();
 
 var defaultOptions = {
     filesPath: path.join(__dirname, '__tempfile')
@@ -57,31 +60,25 @@ var fild = {
                         var dlName = path.join(me.filesPath, filename);
                         var noFileErr = new Error('Invalid file.');
                         if (!filePart) {
-                            cb.call(me, noFileErr);
+                            event.emit('data', noFileErr);
                         }
                         fs.writeFile(dlName, filePart, 'binary', function (err) {
                             if (err) {
-                                cb.call(me, err);
+                                event.emit('data', err);
                             }
-                            cb.call(me, null, {
+                            event.emit('data', null, {
                                 dirname: me.filesPath,
                                 filename: dlName
                             });
                         });
                     });
                 }).on('error', function (e) {
-                    cb.call(me, e);
+                    event.emit('data', e);
                 });
             }
         }
     }
 };
 
-
-
-
-
-
-
-
-module.exports = fild;
+event.download = fild.download;
+module.exports = event;

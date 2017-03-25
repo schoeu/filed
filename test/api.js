@@ -6,8 +6,8 @@ var filed = require('../');
 
 filed.download({
     srcs: ['http://s0.hao123img.com/res/img/logo/logonew.png', 'https://ss1.bdstatic.com/lvoZeXSm1A5BphGlnYG/skin/836.jpg?2']
-}, function (d) {
-    console.log(d);
+}, function (d, file) {
+    console.log(d, file);
 });
 
 
