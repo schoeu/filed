@@ -56,7 +56,7 @@ var fild = {
                     res.on('end', function () {
                         var dlName = path.join(me.filesPath, filename);
                         var noFileErr = new Error('Invalid file.');
-                        if (filePart) {
+                        if (!filePart) {
                             cb.call(me, noFileErr);
                         }
                         fs.writeFile(dlName, filePart, 'binary', function (err) {
