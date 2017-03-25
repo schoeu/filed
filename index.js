@@ -49,26 +49,29 @@ var fild = {
                 var filename = path.basename(item);
                 get(item, function (res) {
                     var filePart = '';
-                    var status = res.statusCode;
-                    res.setEncoding("binary");
+                    res.setEncoding('binary');
                     res.on('data', function (d) {
                         filePart += d;
                     });
                     res.on('end', function () {
                         var dlName = path.join(me.filesPath, filename);
+                        var noFileErr = new Error('Invalid file.');
+                        if (filePart) {
+                            cb.call(me, noFileErr);
+                        }
                         fs.writeFile(dlName, filePart, 'binary', function (err) {
                             if (err) {
-                                console.log('down fail');
+                                cb.call(me, err);
                             }
-                            cb.call(me, {
+                            cb.call(me, null, {
                                 dirname: me.filesPath,
                                 filename: dlName
                             });
                         });
                     });
                 }).on('error', function (e) {
-                    console.error(e);
-                });;
+                    cb.call(me, e);
+                });
             }
         }
     }
