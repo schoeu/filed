@@ -18,17 +18,6 @@ npm install node-filed
 ```
 var filed = require('node-filed');
 
-filed.download({
-    srcs: ['http://s0.hao123img.com/res/img/logo/logonew.png']
-}, function (d) {
-    /**
-    * d {object}
-    * d.filename 下载完成后的文件路径
-    * d.dirname 下载完成后的文件夹路径
-    */
-    console.log(d.filename);
-});
-
 /**
 * 单个文件下载结束后触发
 */
