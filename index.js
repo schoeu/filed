@@ -10,11 +10,16 @@ var path = require('path');
 var url = require('url');
 var EventEmitter = require('events').EventEmitter;
 
+var mine = require('mime');
+
 var event = new EventEmitter();
 
 var defaultOptions = {
     filesPath: path.join(__dirname, '__tempfile')
 };
+
+
+
 
 var fild = {
     init: function (options) {
@@ -36,9 +41,8 @@ var fild = {
         me.srcs = srcs;
     },
     download: function (options, cb) {
-        var me = this;
-        this.init(options);
-        var srcs = me.srcs;
+        fild.init(options);
+        var srcs = fild.srcs;
         var get = http.get;
         for (var i = 0; i < srcs.length; i++) {
             var item = srcs[i];
@@ -52,12 +56,14 @@ var fild = {
                 var filename = path.basename(item);
                 get(item, function (res) {
                     var filePart = '';
+                    var fileType = res.headers['content-type'];
+                    var extName = mine.extension(fileType) || '';
                     res.setEncoding('binary');
                     res.on('data', function (d) {
                         filePart += d;
                     });
                     res.on('end', function () {
-                        var dlName = path.join(me.filesPath, filename);
+                        var dlName = path.join(fild.filesPath, filename + '.' + extName);
                         var noFileErr = new Error('Invalid file.');
                         if (!filePart) {
                             event.emit('data', noFileErr);
@@ -67,7 +73,7 @@ var fild = {
                                 event.emit('data', err);
                             }
                             event.emit('data', null, {
-                                dirname: me.filesPath,
+                                dirname: fild.filesPath,
                                 filename: dlName
                             });
                         });
