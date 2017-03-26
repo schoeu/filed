@@ -4,39 +4,38 @@
 
 var filed = require('../');
 
-filed.on('data', function (err, data) {
-    if (err) {
-        console.log(err);
-    }
-    console.log(data);
-});
-
-
-filed.download({
-    srcs: ['http://s0.hao123img.com/res/img/logo/logonew.png', 'https://ss1.bdstatic.com/lvoZeXSm1A5BphGlnYG/skin/836.jpg?2']
-}, function (d, file) {
-    console.log(d, file);
-});
-
-
-/*
 describe('api test.', function () {
     it('single file download', function () {
-        filed.download({
-            srcs: ['http://s0.hao123img.com/res/img/logo/logonew.png']
-        }, function (d) {
+        filed.on('data', function (err, d) {
             expect(d.filename).to.be.a('string');
             expect(d.dirname).to.be.a('string');
+            done();
+        });
+
+        filed.on('end', function (data) {
+            expect(data).to.be.an('array');
+            done();
+        });
+
+        filed.download({
+            srcs: ['https://ss1.bdstatic.com/lvoZeXSm1A5BphGlnYG/skin/836.jpg?2']
         });
     });
 
     it('multifile download', function () {
-        filed.download({
-            srcs: ['http://s0.hao123img.com/res/img/logo/logonew.png', 'https://ss1.bdstatic.com/lvoZeXSm1A5BphGlnYG/skin/836.jpg?2']
-        }, function (d) {
+        filed.on('data', function (err, d) {
             expect(d.filename).to.be.a('string');
             expect(d.dirname).to.be.a('string');
+            done();
+        });
+
+        filed.on('end', function (data) {
+            expect(data).to.be.a('array');
+            done();
+        });
+
+        filed.download({
+            srcs: ['http://s0.hao123img.com/res/img/logo/logonew.png', 'https://ss1.bdstatic.com/lvoZeXSm1A5BphGlnYG/skin/836.jpg?2']
         });
     });
 });
-*/

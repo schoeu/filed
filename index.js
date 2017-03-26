@@ -11,7 +11,6 @@ var url = require('url');
 var EventEmitter = require('events').EventEmitter;
 
 var mine = require('mime');
-
 var event = new EventEmitter();
 
 var defaultOptions = {
@@ -41,10 +40,15 @@ var fild = {
         me.srcs = srcs;
     },
     download: function (options, cb) {
-        fild.init(options);
-        var srcs = fild.srcs;
+        var me = fild;
+        me.init(options);
+        var srcs = me.srcs;
         var get = http.get;
-        for (var i = 0; i < srcs.length; i++) {
+        var dlArr = [];
+        var srcLegnth = srcs.length || 0;
+        me.all(srcLegnth);
+        me.dlArr = dlArr;
+        for (var i = 0; i < srcLegnth; i++) {
             var item = srcs[i];
             if (typeof item === 'string') {
                 var protocol = url.parse(item);
@@ -53,29 +57,34 @@ var fild = {
                 if (useMethod) {
                     get = https.get;
                 }
-                var filename = path.basename(item);
                 get(item, function (res) {
                     var filePart = '';
                     var fileType = res.headers['content-type'];
                     var extName = mine.extension(fileType) || '';
+                    var reg = new RegExp('\.' + extName + '$');
                     res.setEncoding('binary');
                     res.on('data', function (d) {
                         filePart += d;
                     });
                     res.on('end', function () {
-                        var dlName = path.join(fild.filesPath, filename + '.' + extName);
+                        var filename = path.basename(res.req.path || '');
+                        var rsPath = filename;
+                        if (!reg.test(filename)) {
+                            rsPath = filename + '.' + extName;
+                        }
+                        var dlName = path.join(me.filesPath, rsPath);
                         var noFileErr = new Error('Invalid file.');
                         if (!filePart) {
                             event.emit('data', noFileErr);
+                            return;
                         }
                         fs.writeFile(dlName, filePart, 'binary', function (err) {
-                            if (err) {
-                                event.emit('data', err);
-                            }
-                            event.emit('data', null, {
-                                dirname: fild.filesPath,
+                            var dataInfo = {
+                                dirname: me.filesPath,
                                 filename: dlName
-                            });
+                            };
+                            dlArr.push(dataInfo);
+                            event.emit('data', err, dataInfo);
                         });
                     });
                 }).on('error', function (e) {
@@ -83,6 +92,14 @@ var fild = {
                 });
             }
         }
+    },
+    all: function (srcsLength) {
+        var me = this;
+        event.on('data', function () {
+            if (!--srcsLength) {
+                event.emit('end', me.dlArr);
+            }
+        });
     }
 };
 
