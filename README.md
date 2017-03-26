@@ -28,6 +28,36 @@ filed.download({
     */
     console.log(d.filename);
 });
+
+/**
+* 单个文件下载结束后触发
+*/
+filed.on('data', function (err, d) {
+    /**
+    * d {object}
+    * d.filename 下载完成后的文件路径
+    * d.dirname 下载完成后的文件夹路径
+    */
+    console.log(d.filename);
+});
+
+/**
+* 所有文件下载结束后触发
+*/
+filed.on('end', function (d) {
+    /**
+    * d {Array}
+    * d[].filename 下载完成后的文件路径
+    * d[].dirname 下载完成后的文件夹路径
+    */
+    console.log(d[0]);
+});
+
+filed.download({
+    srcs: ['http://s0.hao123img.com/res/img/logo/logonew.png', 'https://ss1.bdstatic.com/lvoZeXSm1A5BphGlnYG/skin/836.jpg?2']
+});
+
+
 ```
 
 ## License
